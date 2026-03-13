@@ -1,13 +1,14 @@
 package streams;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class CoreStreams {
         public static void main(String[] args) {
-            List<Integer> nums = List.of(1, 8, 7, 9, 3, 2, 4, 3, 7, 9);
+            List<Integer> nums = List.of(1, 8, 7, 9, 2, 3, 2, 4, 3, 7, 9);
 
             /*
              * Remove duplicates from a list using streams
@@ -128,6 +129,24 @@ public class CoreStreams {
             * */
             String text = names.stream().collect(Collectors.joining(","));
             System.out.println("Comma Separated String is: " + text);
+
+            /*
+            * Partition Elements by their frequency in sorted order.
+            * */
+
+            Map<Integer, Long> frequencyMap = nums.stream()
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            System.out.println(frequencyMap);
+
+           Map<Long, List<Integer>> frequencyWiseElements = frequencyMap.entrySet().stream()
+                    .collect(Collectors.groupingBy(Map.Entry::getValue,
+                            HashMap::new, Collectors.mapping(Map.Entry::getKey,
+                                    Collectors.collectingAndThen(Collectors.toList(), list -> {
+                                        Collections.sort(list);
+                                        return list;
+                                    }))));
+            System.out.println(frequencyWiseElements);
+
 
         }
 }
